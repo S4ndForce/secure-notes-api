@@ -1,5 +1,7 @@
 package com.example.note;
 
+import com.example.exceptions.ForbiddenException;
+import com.example.exceptions.NotFoundException;
 import com.example.user.User;
 import com.example.auth.CurrentUser;
 import com.example.user.UserRepository;
@@ -26,10 +28,12 @@ public class NoteService {
 
     public NoteResponse getById(Long id, Authentication auth) {
         User user = currentUser.get(auth);
-        Note note = noteRepository.findById(id).orElseThrow();
+        Note note = noteRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Note not found"));
+
 
         if (!note.isOwnedBy(user)) {
-            throw new RuntimeException("Forbidden");
+            throw new ForbiddenException("Not your note");
         }
 
         return NoteResponse.fromEntity(note);
