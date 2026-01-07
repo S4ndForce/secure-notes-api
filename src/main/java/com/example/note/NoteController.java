@@ -2,6 +2,8 @@ package com.example.note;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PatchMapping;
+
 
 import java.util.List;
 
@@ -37,6 +39,7 @@ public class NoteController {
             @RequestBody String content,
             Authentication auth
     ) {
+        System.out.println("PATCH HIT");
         return noteService.update(id, content, auth);
     }
 

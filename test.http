@@ -1,4 +1,4 @@
-@JWT_A =eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhQHRlc3QuY29tIiwiaWF0IjoxNzY3Nzg5MzI2LCJleHAiOjE3Njc3OTI5MjZ9.Xb0BpeC9f7seVXRfGZ21gmo92WrvbdHpMfvFymTFPBk
+@JWT_A =eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhQHRlc3QuY29tIiwiaWF0IjoxNzY3ODE5Nzk5LCJleHAiOjE3Njc4MjMzOTl9.v1l8lNI4oX4I2ZrM5GERHLb3VfLdsOpOBx3rxLjXP54
 @NOTE_ID = 1
 @JWT_B =eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJiQHRlc3QuY29tIiwiaWF0IjoxNzY3Nzg5MzcyLCJleHAiOjE3Njc3OTI5NzJ9.7ifNCEXQd3b2nJnXR1HQrukEcgiIePMonGqg7Tv0W6k
 ### Register User A
@@ -58,3 +58,10 @@ Authorization: Bearer {{JWT_A}}
 Content-Type: text/plain
 
 updated content
+
+### Update note (User B)
+PATCH http://localhost:8081/notes/{{NOTE_ID}}
+Authorization: Bearer {{JWT_B}}
+Content-Type: text/plain
+
+hacked content
