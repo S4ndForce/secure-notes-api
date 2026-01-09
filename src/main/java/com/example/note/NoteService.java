@@ -4,12 +4,15 @@ import com.example.exceptions.ForbiddenException;
 import com.example.exceptions.NotFoundException;
 import com.example.folder.Folder;
 import com.example.folder.FolderRepository;
+import com.example.shared.SharedLink;
+import com.example.shared.SharedLinkRepository;
 import com.example.user.User;
 import com.example.auth.CurrentUser;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class NoteService {
@@ -17,11 +20,16 @@ public class NoteService {
     private final NoteRepository noteRepository;
     private final CurrentUser currentUser;
     private final FolderRepository folderRepository;
+    private final SharedLinkRepository sharedLinkRepository;
 
-    public NoteService(NoteRepository noteRepository, CurrentUser currentUser, FolderRepository folderRepository) {
+    public NoteService(NoteRepository noteRepository,
+                       CurrentUser currentUser,
+                       FolderRepository folderRepository,
+                       SharedLinkRepository sharedLinkRepository) {
         this.noteRepository = noteRepository;
         this.currentUser = currentUser;
         this.folderRepository = folderRepository;
+        this.sharedLinkRepository = sharedLinkRepository;
     }
 
     public NoteResponse create(Long folderId, String content, Authentication auth) {
@@ -106,5 +114,26 @@ public class NoteService {
                 .map(NoteResponse::fromEntity)
                 .toList();
     }
+
+    public String createSharedLink(Long id, Authentication auth) {
+        User user = currentUser.get(auth);
+        Note note = noteRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Note not found"));
+
+        if (!note.isOwnedBy(user)) {
+            throw new ForbiddenException("Not your note");
+        }
+
+        note.setVisibility(Visibility.SHARED_LINK);
+
+        String token = UUID.randomUUID().toString();
+
+        sharedLinkRepository.save(new SharedLink(token, note));
+        noteRepository.save(note);
+
+        return token;
+    }
+
+
 
 }

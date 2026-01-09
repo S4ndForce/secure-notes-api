@@ -1,6 +1,9 @@
-@JWT_A =eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhQHRlc3QuY29tIiwiaWF0IjoxNzY3ODE5Nzk5LCJleHAiOjE3Njc4MjMzOTl9.v1l8lNI4oX4I2ZrM5GERHLb3VfLdsOpOBx3rxLjXP54
+@JWT_A = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhQHRlc3QuY29tIiwiaWF0IjoxNzY3OTYyMDcyLCJleHAiOjE3Njc5NjU2NzJ9.2s7zy-LNYlxNukjid2cKiyzwcmnJDDvpDAgEYOe3F5A
+@JWT_B =
+@FOLDER_ID = 1
 @NOTE_ID = 1
-@JWT_B =eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJiQHRlc3QuY29tIiwiaWF0IjoxNzY3Nzg5MzcyLCJleHAiOjE3Njc3OTI5NzJ9.7ifNCEXQd3b2nJnXR1HQrukEcgiIePMonGqg7Tv0W6k
+@SHARE_TOKEN = 35b3c610-2c4b-4d4c-bec6-35f7477d2022
+
 ### Register User A
 POST http://localhost:8081/auth/register
 Content-Type: application/json
@@ -10,7 +13,9 @@ Content-Type: application/json
   "password": "password"
 }
 
-### Login User A
+###
+
+### Login User A → copy token to {{JWT_A}}
 POST http://localhost:8081/auth/login
 Content-Type: application/json
 
@@ -19,16 +24,40 @@ Content-Type: application/json
   "password": "password"
 }
 
-### Me (User A)
-GET http://localhost:8081/me
-Authorization: Bearer {{JWT_A}}
+###
 
-### Create note (User A)
-POST http://localhost:8081/notes
+### Create Folder (User A) → copy returned id to {{FOLDER_ID}}
+POST http://localhost:8081/folders
+Authorization: Bearer {{JWT_A}}
+Content-Type: text/plain
+
+Personal
+
+###
+
+### Create Note inside Folder (User A) → copy returned id to {{NOTE_ID}}
+POST http://localhost:8081/notes?folderId={{FOLDER_ID}}
 Authorization: Bearer {{JWT_A}}
 Content-Type: text/plain
 
 note from user A
+
+###
+
+### Me (User A)
+GET http://localhost:8081/me
+Authorization: Bearer {{JWT_A}}
+
+###
+
+### Update Note (User A)
+PATCH http://localhost:8081/notes/{{NOTE_ID}}
+Authorization: Bearer {{JWT_A}}
+Content-Type: text/plain
+
+updated content
+
+###
 
 ### Register User B
 POST http://localhost:8081/auth/register
@@ -39,7 +68,9 @@ Content-Type: application/json
   "password": "password"
 }
 
-### Login User B
+###
+
+### Login User B → copy token to {{JWT_B}}
 POST http://localhost:8081/auth/login
 Content-Type: application/json
 
@@ -48,20 +79,34 @@ Content-Type: application/json
   "password": "password"
 }
 
-### Ownership test
+###
+
+### Ownership test: User B tries to GET User A’s note → expect 403 Forbidden
 GET http://localhost:8081/notes/{{NOTE_ID}}
-Authorization: Bearer {{JWT_A}}
+Authorization: Bearer {{JWT_B}}
 
-### Update note (User A)
-PATCH http://localhost:8081/notes/{{NOTE_ID}}
-Authorization: Bearer {{JWT_A}}
-Content-Type: text/plain
+###
 
-updated content
-
-### Update note (User B)
+### Ownership test: User B tries to PATCH → expect 403 Forbidden
 PATCH http://localhost:8081/notes/{{NOTE_ID}}
 Authorization: Bearer {{JWT_B}}
 Content-Type: text/plain
 
 hacked content
+
+###
+
+### (New) Share Note (User A) → returns token, copy to {{SHARE_TOKEN}}
+POST http://localhost:8081/notes/{{NOTE_ID}}/share
+Authorization: Bearer {{JWT_A}}
+
+###
+
+### (New) Shared access without auth → expect 200 + NoteResponse
+GET http://localhost:8081/shared/{{SHARE_TOKEN}}
+
+###
+
+### (Optional) Invalid shared token → expect 404 NotFound
+GET http://localhost:8081/shared/bad-token-xyz
+

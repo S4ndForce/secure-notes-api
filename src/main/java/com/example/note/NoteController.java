@@ -63,4 +63,8 @@ public class NoteController {
         return noteService.getByFolder(folderId, auth);
     }
 
+    @PostMapping("/{id}/share")
+    public String share(@PathVariable Long id, Authentication auth) {
+        return noteService.createSharedLink(id, auth);
+    }
 }

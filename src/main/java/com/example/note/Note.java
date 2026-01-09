@@ -27,6 +27,10 @@ public class Note {
         this.folder = folder;
     }
 
+    @Enumerated(EnumType.STRING)
+    private Visibility visibility = Visibility.PRIVATE;
+
+
     public Note(String content, User owner) {
         this.content = content;
         this.owner = owner;
@@ -52,7 +56,13 @@ public class Note {
         this.content = content;
     }
 
+    public void setVisibility(Visibility visibility) {
+        this.visibility = visibility;
+    }
+
     public Folder getFolder() {
         return folder;
     }
+
+
 }
