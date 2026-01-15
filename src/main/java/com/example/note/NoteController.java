@@ -43,7 +43,6 @@ public class NoteController {
             @RequestBody String content,
             Authentication auth
     ) {
-        System.out.println("PATCH HIT");
         return noteService.update(id, content, auth);
     }
 

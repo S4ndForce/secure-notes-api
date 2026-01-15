@@ -4,7 +4,7 @@ import com.example.user.User;
 import org.springframework.data.jpa.domain.Specification;
 
 public class NoteSpecs {
-
+    // QLA specs
     public static Specification<Note> belongsTo(User user) {
         return (root, query, cb) -> cb.equal(root.get("owner"), user);
     }
@@ -17,6 +17,8 @@ public class NoteSpecs {
         return (root, query, cb) ->
                 cb.like(cb.lower(root.get("content")), "%" + text.toLowerCase() + "%");
     }
+
+    // Search specs
 
     public static Specification<Note> inFolder(Long folderId) {
         return (root, query, cb) ->

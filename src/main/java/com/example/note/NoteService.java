@@ -7,7 +7,6 @@ import com.example.folder.FolderRepository;
 import com.example.folder.FolderSpecs;
 import com.example.shared.SharedAction;
 import com.example.shared.SharedLink;
-import com.example.shared.SharedLinkRepository;
 import com.example.shared.SharedLinkService;
 import com.example.user.User;
 import com.example.auth.CurrentUser;
@@ -15,6 +14,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Set;
 
@@ -51,10 +51,18 @@ public class NoteService {
             throw new ForbiddenException("Not your folder");
         }
 
+
         Note note = new Note(content, user, folder);
+        Instant now = Instant.now();
+        note.setCreatedAt(now);
+        note.setUpdatedAt(now);
         noteRepository.save(note);
         return NoteResponse.fromEntity(note);
+
+
     }
+
+
 
     public NoteResponse getById(Long id, Authentication auth) {
         User user = currentUser.get(auth);
@@ -88,9 +96,7 @@ public class NoteService {
         Folder folder = folderRepository.findOne(folderSpec)
                 .orElseThrow(() -> new ForbiddenException("Not your folder"));
 
-        Specification<Note> noteSpec = Specification
-                .allOf(NoteSpecs.belongsTo(user))
-                .and(NoteSpecs.inFolder(folderId));
+        Specification<Note> noteSpec = ownedNote(folderId, user);
 
         List<Note> notes = noteRepository.findAll(noteSpec);
 
@@ -99,6 +105,7 @@ public class NoteService {
                 .toList();
     }
 
+    // still uses classic repo logic
     public List<NoteResponse> getMyNotes(Authentication auth) {
         User user = currentUser.get(auth);
 
@@ -117,15 +124,14 @@ public class NoteService {
         }
 
 
-        Specification<Note> spec = Specification
-                .allOf(NoteSpecs.withId(id))
-                .and(NoteSpecs.belongsTo(user));
+        Specification<Note> spec = ownedNote(id,user);
 
         Note note = noteRepository.findOne(spec)
                 .orElseThrow(() -> new ForbiddenException("Not your note"));
 
 
         note.setContent(content);
+        note.setUpdatedAt(Instant.now());
         noteRepository.save(note);
 
         return NoteResponse.fromEntity(note);
@@ -138,9 +144,7 @@ public class NoteService {
             throw new NotFoundException("Note not found");
         }
 
-        Specification<Note> spec = Specification
-                .allOf(NoteSpecs.withId(id))
-                .and(NoteSpecs.belongsTo(user));
+        Specification<Note> spec = ownedNote(id, user);
 
         Note note = noteRepository.findOne(spec)
                 .orElseThrow(() -> new ForbiddenException("Not your note"));

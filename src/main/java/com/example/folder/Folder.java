@@ -3,6 +3,8 @@ package com.example.folder;
 import com.example.user.User;
 import jakarta.persistence.*;
 
+import java.time.Instant;
+
 @Entity
 @Table(name = "folders") // Prevents naming conflicts in db
 public class Folder {
@@ -12,6 +14,12 @@ public class Folder {
     private Long id;
 
     private String name;
+
+    @Column(nullable = false, updatable = false)
+    private Instant createdAt;
+
+    @Column(nullable = false)
+    private Instant updatedAt;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private User owner;
@@ -31,6 +39,14 @@ public class Folder {
 
     public boolean isOwnedBy(User user) {
         return owner != null && owner.getId().equals(user.getId());
+    }
+
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setUpdatedAt(Instant updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }
 

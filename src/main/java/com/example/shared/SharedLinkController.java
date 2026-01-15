@@ -9,11 +9,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/shared")
 public class SharedLinkController {
 
-    private final SharedLinkRepository sharedLinkRepository;
     private final SharedLinkService sharedLinkService;
 
-    public SharedLinkController(SharedLinkRepository sharedLinkRepository, SharedLinkService sharedLinkService) {
-        this.sharedLinkRepository = sharedLinkRepository;
+    public SharedLinkController(SharedLinkService sharedLinkService) {
         this.sharedLinkService = sharedLinkService;
     }
 

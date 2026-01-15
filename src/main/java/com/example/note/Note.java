@@ -4,12 +4,20 @@ import com.example.folder.Folder;
 import com.example.user.User;
 import jakarta.persistence.*;
 
+import java.time.Instant;
+
 @Entity
 public class Note {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false, updatable = false)
+    private Instant createdAt;
+
+    @Column(nullable = false)
+    private Instant updatedAt;
 
     private String content;
 
@@ -64,5 +72,11 @@ public class Note {
         return folder;
     }
 
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
+    }
 
+    public void setUpdatedAt(Instant updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 }

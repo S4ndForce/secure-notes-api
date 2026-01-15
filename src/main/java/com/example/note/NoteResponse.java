@@ -5,6 +5,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
+import java.time.Instant;
+
 public class NoteResponse {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,6 +17,10 @@ public class NoteResponse {
     private String userName;
 
     private Long folderId;
+
+    private Instant createdAt;
+    private Instant updatedAt;
+
 
     public NoteResponse(Long id, String content, String userName, Long folderId){
         this.content = content;
@@ -46,6 +52,7 @@ public class NoteResponse {
         userName = user.getEmail();
     }
 
+
     public static NoteResponse fromEntity(Note note){
         return new NoteResponse(
                 note.getId(),
@@ -55,5 +62,21 @@ public class NoteResponse {
         );
 
 
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Instant getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Instant updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }

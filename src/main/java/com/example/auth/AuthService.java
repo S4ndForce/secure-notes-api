@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthService {
 
-    // Part that finalizes the creation of the user entity
+    // Part that finalizes the creation of the user entity, NOT user service
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
