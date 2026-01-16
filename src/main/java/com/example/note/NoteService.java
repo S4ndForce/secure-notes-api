@@ -183,7 +183,7 @@ public class NoteService {
         return link.getToken();
     }
 
-    public Page<NoteResponse> searchMyNotes(
+    public PageResponse<NoteResponse> searchMyNotes(
             String text,
             Long folderId,
             Pageable pageable,
@@ -202,8 +202,15 @@ public class NoteService {
         }
 
         Page<Note> notes = noteRepository.findAll(spec, pageable);
+        var content = notes.map(NoteResponse::fromEntity).toList();
 
-        return notes.map(NoteResponse::fromEntity);
+        return new PageResponse<NoteResponse>(
+                content,
+                notes.getNumber(),
+                notes.getSize(),
+                notes.getTotalElements(),
+                notes.getTotalPages()
+        );
     }
 
 
