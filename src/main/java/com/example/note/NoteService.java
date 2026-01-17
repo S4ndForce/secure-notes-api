@@ -47,7 +47,10 @@ public class NoteService {
     }
     // Helper methods
     private Specification<Note> ownedNote(Long id, User user) {
-        return Specification.allOf(NoteSpecs.withId(id)).and(NoteSpecs.belongsTo(user));
+        return Specification
+                .allOf(NoteSpecs.withId(id))
+                .and(NoteSpecs.belongsTo(user))
+                .and(NoteSpecs.notDeleted());
     }
 
     // Business logic
@@ -160,7 +163,8 @@ public class NoteService {
         Note note = noteRepository.findOne(spec)
                 .orElseThrow(() -> new ForbiddenException("Not your note"));
 
-        noteRepository.delete(note);
+        note.setDeletedAt(Instant.now());
+        noteRepository.save(note);
     }
 
 
@@ -198,7 +202,9 @@ public class NoteService {
     ) {
         User user = currentUser.get(auth);
 
-        Specification<Note> spec = Specification.allOf(NoteSpecs.belongsTo(user));
+        Specification<Note> spec = Specification
+                .allOf(NoteSpecs.belongsTo(user))
+                .and(NoteSpecs.notDeleted());
 
         if (text != null && !text.isBlank()) {
             spec = spec.and(NoteSpecs.contentContains(text));
@@ -255,6 +261,21 @@ public class NoteService {
         noteRepository.save(note);
 
         return NoteResponse.fromEntity(note);
+    }
+
+    public void restore(Long id, Authentication auth) {
+        User user = currentUser.get(auth);
+
+        Specification<Note> spec = Specification
+                .allOf(NoteSpecs.withId(id))
+                .and(NoteSpecs.belongsTo(user));
+
+        Note note = noteRepository.findOne(spec)
+                .orElseThrow(() -> new ForbiddenException("Not your note"));
+
+        note.setDeletedAt(null);
+        note.setUpdatedAt(Instant.now());
+        noteRepository.save(note);
     }
 
 

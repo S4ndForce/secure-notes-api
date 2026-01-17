@@ -100,4 +100,9 @@ public class NoteController {
     ) {
         return noteService.removeTag(id, name, auth);
     }
+
+    @PostMapping("/{id}/restore")
+    public void restore(@PathVariable Long id, Authentication auth) {
+        noteService.restore(id, auth);
+    }
 }

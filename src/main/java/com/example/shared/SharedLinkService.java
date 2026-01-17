@@ -3,9 +3,11 @@ package com.example.shared;
 import com.example.exceptions.ForbiddenException;
 import com.example.exceptions.NotFoundException;
 import com.example.note.Note;
+import com.example.note.NoteResponse;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -41,6 +43,10 @@ public class SharedLinkService {
             throw new ForbiddenException("Action not allowed");
         }
 
+        if (link.getNote().getDeletedAt() != null) {
+            throw new ForbiddenException("Note deleted");
+        }
+
         return link;
     }
 
@@ -54,5 +60,13 @@ public class SharedLinkService {
 
         link.revoke(Instant.now());
         repository.save(link);
+    }
+
+    public NoteResponse getNote(String token) {
+        SharedLink link = repository.findByToken(token)
+                .orElseThrow(() -> new NotFoundException("Invalid link"));
+
+        Note note = link.getNote();
+        return NoteResponse.fromEntity(note);
     }
 }

@@ -36,6 +36,10 @@ public class NoteSpecs {
         };
     }
 
+    public static Specification<Note> notDeleted() {
+        return (root, query, cb) -> cb.isNull(root.get("deletedAt"));
+    }
+
 
 
 }

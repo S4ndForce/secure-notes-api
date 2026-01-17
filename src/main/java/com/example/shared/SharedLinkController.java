@@ -15,10 +15,10 @@ public class SharedLinkController {
         this.sharedLinkService = sharedLinkService;
     }
 
+    // Creation handled in NoteService
+
     @GetMapping("/{token}")
     public NoteResponse getShared(@PathVariable String token) {
-        SharedLink link = sharedLinkService.validate(token, SharedAction.READ);
-        Note note = link.getNote();
-        return NoteResponse.fromEntity(note);
+        return sharedLinkService.getNote(token);
     }
 }
