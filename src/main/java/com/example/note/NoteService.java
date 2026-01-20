@@ -152,16 +152,13 @@ public class NoteService {
     }
 
     public void delete(Long id, Authentication auth) {
-        User user = currentUser.get(auth);
 
-        if (!noteRepository.existsById(id)) {
-            throw new NotFoundException("Note not found");
-        }
+        User user = currentUser.get(auth);
 
         Specification<Note> spec = ownedNote(id, user);
 
         Note note = noteRepository.findOne(spec)
-                .orElseThrow(() -> new ForbiddenException("Not your note"));
+                .orElseThrow(() -> new NotFoundException("Note not found"));
 
         note.setDeletedAt(Instant.now());
         noteRepository.save(note);
@@ -187,7 +184,7 @@ public class NoteService {
         SharedLink link = sharedLinkService.create(
                 note,
                 Set.of(SharedAction.READ),
-                null
+                Instant.now().plusSeconds(60) // add configurability later
         );
 
         return link.getToken();

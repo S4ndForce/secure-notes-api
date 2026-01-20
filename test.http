@@ -1,8 +1,8 @@
-@JWT_A = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhQHRlc3QuY29tIiwiaWF0IjoxNzY4ODc1NDg1LCJleHAiOjE3Njg4NzkwODV9.m6rcrXdWXS8vm1z2dziis5WPhdvfu0G5eYvbp8mLXNU
+@JWT_A = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhQHRlc3QuY29tIiwiaWF0IjoxNzY4OTQ3MjY2LCJleHAiOjE3Njg5NTA4NjZ9.Bx49si3cWkPQwQunp5tCLwvmbVIh9Q7qFreMt2olQ1Y
 @JWT_B = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJiQHRlc3QuY29tIiwiaWF0IjoxNzY4MjIyNDgyLCJleHAiOjE3NjgyMjYwODJ9.SC-7sb65KgG6pek05_tyavrlWXGC_RoCzvB_6yGSxEo
 @FOLDER_ID = 1
 @NOTE_ID = 1
-@SHARE_TOKEN = 9e6137df-dcbd-4e5a-92e0-3139cc2a4bbc
+@SHARE_TOKEN = 94bac29e-8f54-4c70-861c-0fc2cd57e014
 
 ### Register User A
 POST http://localhost:8081/auth/register
@@ -80,6 +80,7 @@ Content-Type: application/json
 }
 
 ###
+
 
 ### Ownership test: User B tries to GET User A’s note → expect 403 Forbidden
 GET http://localhost:8081/notes/{{NOTE_ID}}
