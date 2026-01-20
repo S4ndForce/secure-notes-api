@@ -1,4 +1,4 @@
-@JWT_A = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhQHRlc3QuY29tIiwiaWF0IjoxNzY4Njg1NTg3LCJleHAiOjE3Njg2ODkxODd9.RSL0Bf-ilvra3aFGS_XNsTxaaFGi8ziKuG9UxylAm9c
+@JWT_A = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhQHRlc3QuY29tIiwiaWF0IjoxNzY4ODc1NDg1LCJleHAiOjE3Njg4NzkwODV9.m6rcrXdWXS8vm1z2dziis5WPhdvfu0G5eYvbp8mLXNU
 @JWT_B = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJiQHRlc3QuY29tIiwiaWF0IjoxNzY4MjIyNDgyLCJleHAiOjE3NjgyMjYwODJ9.SC-7sb65KgG6pek05_tyavrlWXGC_RoCzvB_6yGSxEo
 @FOLDER_ID = 1
 @NOTE_ID = 1
@@ -27,7 +27,7 @@ Content-Type: application/json
 ###
 
 ### Create Folder (User A) → copy returned id to {{FOLDER_ID}}
-POST http://localhost:8082/folders
+POST http://localhost:8081/folders
 Authorization: Bearer {{JWT_A}}
 Content-Type: text/plain
 

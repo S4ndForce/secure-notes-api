@@ -34,6 +34,7 @@ public class JwtAuthenticationFilter implements Filter {
                     email, null, Collections.emptyList()
             );
 
+            // Where Authentication object is created
             SecurityContextHolder.getContext().setAuthentication(auth);
         }
 
