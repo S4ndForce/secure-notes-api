@@ -32,7 +32,8 @@ public class SecurityConfig {
                                         "/health",
                                         "/ready",
                                         "/version",
-                                        "/async-test"
+                                        "/async-test",
+                                        "/job-test"
                                 ).permitAll()
                         .anyRequest().authenticated()
                 )

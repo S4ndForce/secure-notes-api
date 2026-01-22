@@ -8,7 +8,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         format_sql: true
@@ -19,3 +19,8 @@ server:
 jwt:
   secret: dev-secret-key-should-not-be-used-in-prod
   expiration-ms: 3600000  # 1 hour
+
+  logging:
+    level:
+      org.hibernate.SQL: DEBUG
+      org.hibernate.orm.jdbc.bind: TRACE

@@ -16,7 +16,7 @@ public class ExecutorConfig {
         executor.setMaxPoolSize(8);          // cap on growth
         executor.setQueueCapacity(100);      // tasks before rejecting
         executor.setThreadNamePrefix("app-exec-");
-        executor.setTaskDecorator(MdcRunnableWrapper::new);
+        executor.setTaskDecorator(MdcRunnableWrapper::new); // allows propagation
         executor.setWaitForTasksToCompleteOnShutdown(true);
         executor.initialize();
         return executor;
