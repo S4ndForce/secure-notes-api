@@ -1,6 +1,8 @@
 package com.example.jobs;
 
 import com.example.email.EmailClient;
+import com.example.failure.JobFailure;
+import com.example.failure.JobFailureRepository;
 import com.example.idempotency.IdempotencyService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,10 +20,12 @@ public class EmailJobService {
     private static final Logger log = LoggerFactory.getLogger("JOBS");
     private final EmailClient emailClient;
     private final IdempotencyService idempotencyService;
+    private final JobFailureRepository failureRepository;
 
-    public EmailJobService(EmailClient emailClient, IdempotencyService idempotencyService) {
+    public EmailJobService(EmailClient emailClient, IdempotencyService idempotencyService, JobFailureRepository failureRepository) {
         this.emailClient = emailClient;
         this.idempotencyService = idempotencyService;
+        this.failureRepository = failureRepository;
     }
 
     @Async("appExecutor")
@@ -49,7 +53,7 @@ public class EmailJobService {
             return;
         }
 
-        log.info("Sending welcome email userId={} email={}", email);
+        log.info("Sending welcome email email={}", email);
 
         // Simulate email send
         emailClient.sendWelcomeEmail(email);
@@ -62,13 +66,22 @@ public class EmailJobService {
 
 
     @Recover
-    public void recover(RuntimeException e, UUID userId, String email) {
+    public void recover(RuntimeException e,  String email) {
+        String actionKey = "welcome-email:" + email;
+
         log.error(
-                "Welcome email permanently failed userId={} email={}",
-                userId,
+                "Welcome email permanently failed email={}",
                 email,
                 e
         );
-        // later: persist failure, alert, or DLQ
+
+        failureRepository.save(
+                new JobFailure(
+                        "WELCOME_EMAIL",
+                        actionKey,
+                        email,
+                        e.getMessage()
+                )
+        );
     }
 }
