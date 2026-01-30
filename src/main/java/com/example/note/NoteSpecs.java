@@ -18,7 +18,6 @@ public class NoteSpecs {
 
 
     // Search specs
-
     public static Specification<Note> inFolder(Long folderId) {
         return (root, query, cb) ->
                 cb.equal(root.get("folder").get("id"), folderId);
@@ -37,7 +36,8 @@ public class NoteSpecs {
     }
 
     public static Specification<Note> notDeleted() {
-        return (root, query, cb) -> cb.isNull(root.get("deletedAt"));
+        return (root, query, cb) ->
+                cb.isNull(root.get("deletedAt"));
     }
 
 

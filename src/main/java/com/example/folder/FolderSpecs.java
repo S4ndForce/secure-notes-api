@@ -12,4 +12,9 @@ public class FolderSpecs {
     public static Specification<Folder> belongsTo(User user) {
         return (root, query, cb) -> cb.equal(root.get("owner"), user);
     }
+
+    public static Specification<Folder> notDeleted() {
+        return (root, query, cb) ->
+                cb.isNull(root.get("deletedAt"));
+    }
 }

@@ -85,11 +85,7 @@ public class NoteService {
 
         Folder folder = folderRepository.findById(folderId)
                 .orElseThrow(() -> new NotFoundException("Folder not found"));
-
-        if (!folder.isOwnedBy(user)) {
-            throw new ForbiddenException("Not your folder");
-        }
-
+        ownedAuth.authorize(OwnerAction.CREATE);
         Note note = new Note(content, user, folder);
         Instant now = Instant.now();
         note.setCreatedAt(now);

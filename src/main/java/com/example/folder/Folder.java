@@ -24,6 +24,8 @@ public class Folder {
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private User owner;
 
+    private Instant deletedAt;
+
     protected Folder() {}
 
     public Folder(String name, User owner) {
@@ -55,6 +57,14 @@ public class Folder {
 
     public Instant getUpdatedAt() {
         return updatedAt;
+    }
+
+    public Instant getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void setDeletedAt(Instant deletedAt) {
+        this.deletedAt = deletedAt;
     }
 }
 
