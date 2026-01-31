@@ -28,6 +28,7 @@ public class FolderController {
 
     @GetMapping("/{id}")
     public FolderResponse get(@PathVariable Long id, Authentication auth) {
+
         return folderService.getById(id, auth);
     }
 
@@ -38,8 +39,12 @@ public class FolderController {
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id, Authentication auth) {
+
         folderService.delete(id, auth);
     }
 
-
+    @PostMapping("/{id}/restore")
+    public void restore(@PathVariable Long id, Authentication auth) {
+        folderService.restore(id, auth);
+    }
 }

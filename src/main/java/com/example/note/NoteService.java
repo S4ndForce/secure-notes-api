@@ -83,8 +83,10 @@ public class NoteService {
     // Business logic
     public NoteResponse create(Long folderId, String content, Authentication auth) {
         User user = currentUser.get(auth);
-
-        Folder folder = folderRepository.findById(folderId)
+        Specification<Folder> spec = Specification.allOf(FolderSpecs.withId(folderId))
+                .and(FolderSpecs.belongsTo(user))
+                .and(FolderSpecs.notDeleted());
+        Folder folder = folderRepository.findOne(spec)
                 .orElseThrow(() -> new NotFoundException("Folder not found"));
         ownedAuth.authorize(OwnerAction.CREATE);
         Note note = new Note(content, user, folder);

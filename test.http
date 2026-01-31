@@ -1,4 +1,4 @@
-@JWT_A = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhQHRlc3QuY29tIiwiaWF0IjoxNzY5NjA5NDIyLCJleHAiOjE3Njk2MTMwMjJ9.NPoBR07maasofgusRp-mSpLNeEow68JPxB989IB9NeA
+@JWT_A =eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhQHRlc3QuY29tIiwiaWF0IjoxNzY5ODgwMzkxLCJleHAiOjE3Njk5MTYzOTF9.QiWzL8xVHSreyWqvEFN3udCLtVB9cDvPMqDOvYh8Y9s
 @JWT_B = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJiQHRlc3QuY29tIiwiaWF0IjoxNzY5NjA5NDk0LCJleHAiOjE3Njk2MTMwOTR9.0Rudblu0xg0BxQ2LIjNEFFUwiPQskkqoBXycOrR-FK4
 @FOLDER_ID = 1
 @NOTE_ID = 1
@@ -25,7 +25,7 @@ Content-Type: application/json
 }
 
 ###
-
+------------------------------------------------------------------
 ### Create Folder (User A) → copy returned id to {{FOLDER_ID}}
 POST http://localhost:8081/folders
 Authorization: Bearer {{JWT_A}}
@@ -34,6 +34,21 @@ Content-Type: text/plain
 Personal
 
 ###
+
+### Restore folder
+POST http://localhost:8081/folders/restore/{{FOLDER_ID}}
+Authorization: Bearer {{JWT_A}}
+
+
+###
+
+### Delete folder
+DELETE http://localhost:8081/folders/{{FOLDER_ID}}
+Authorization: Bearer {{JWT_A}}
+
+
+###
+-------------------------------------------------------
 
 ### Create Note inside Folder (User A) → copy returned id to {{NOTE_ID}}
 POST http://localhost:8081/notes?folderId={{FOLDER_ID}}
