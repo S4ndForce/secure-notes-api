@@ -13,9 +13,11 @@ import java.util.Collections;
 public class JwtAuthenticationFilter implements Filter {
 
     private final JwtUtil jwtUtil;
+    private final JwtAuthenticationEntryPoint entryPoint;
 
-    public JwtAuthenticationFilter(JwtUtil jwtUtil) {
+    public JwtAuthenticationFilter(JwtUtil jwtUtil, JwtAuthenticationEntryPoint entryPoint) {
         this.jwtUtil = jwtUtil;
+        this.entryPoint = entryPoint;
     }
 
     @Override
@@ -28,14 +30,27 @@ public class JwtAuthenticationFilter implements Filter {
 
         if (header != null && header.startsWith("Bearer ")) {
             String token = header.substring(7);
-            String email = jwtUtil.validateAndGetEmail(token);
 
-            var auth = new UsernamePasswordAuthenticationToken(
-                    email, null, Collections.emptyList()
-            );
+           try {
+               String email = jwtUtil.validateAndGetEmail(token);
+               var auth = new UsernamePasswordAuthenticationToken(
+                       email, null, Collections.emptyList()
 
-            // Where Authentication object is created
-            SecurityContextHolder.getContext().setAuthentication(auth);
+               );
+               // Where Authentication object is created
+               SecurityContextHolder.getContext().setAuthentication(auth);
+
+           } catch (Exception ex) {
+               SecurityContextHolder.clearContext();
+
+               entryPoint.commence(
+                       http,
+                       (jakarta.servlet.http.HttpServletResponse) response,
+                       new org.springframework.security.authentication.BadCredentialsException(
+                               "Invalid JWT", ex
+                       ));
+               return;
+           }
         }
 
         chain.doFilter(request, response);

@@ -1,5 +1,6 @@
-@JWT_A =eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhQHRlc3QuY29tIiwiaWF0IjoxNzY5ODgwMzkxLCJleHAiOjE3Njk5MTYzOTF9.QiWzL8xVHSreyWqvEFN3udCLtVB9cDvPMqDOvYh8Y9s
-@JWT_B = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJiQHRlc3QuY29tIiwiaWF0IjoxNzY5NjA5NDk0LCJleHAiOjE3Njk2MTMwOTR9.0Rudblu0xg0BxQ2LIjNEFFUwiPQskkqoBXycOrR-FK4
+@JWT_A =eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhQHRlc3QuY29tIiwiaWF0IjoxNzY5OTg5OTEyLCJleHAiOjE3NzAwMjU5MTJ9.UboJ6tqvIr03Wdm2-RQcRU8Pjp19pq3RurEag9Vmhng
+
+@JWT_B = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJiQHRlc3QuY29tIiwiaWF0IjoxNzY5OTg5OTYyLCJleHAiOjE3NzAwMjU5NjJ9.euX1kzBQf9H1XObX9oV1H_JW-GyXZy7TO1Ca8u9_tac
 @FOLDER_ID = 1
 @NOTE_ID = 1
 @SHARE_TOKEN = e5435159-2cf7-4337-b6a3-54c625e5c52e
@@ -103,7 +104,7 @@ Authorization: Bearer {{JWT_B}}
 
 ###
 
-### Ownership test: User B tries to GET User A’s note → expect 403 Forbidden
+### normal access
 GET http://localhost:8081/notes/{{NOTE_ID}}
 Authorization: Bearer {{JWT_A}}
 
