@@ -1,4 +1,4 @@
-@JWT_A =eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhQHRlc3QuY29tIiwiaWF0IjoxNzY5OTg5OTEyLCJleHAiOjE3NzAwMjU5MTJ9.UboJ6tqvIr03Wdm2-RQcRU8Pjp19pq3RurEag9Vmhng
+@JWT_A =eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhQHRlc3QuY29tIiwianRpIjoiNWQ0Mzk1ODktMzQ2YS00YzRmLTgyZTgtZTI0OTg0ODJiY2I4IiwiaWF0IjoxNzcwNTExOTY2LCJleHAiOjE3NzA1NDc5NjZ9.FLrL7FmQbtRXML5-5xtCoGQMeoOqhXCt2SVvmYdT5mQ
 
 @JWT_B = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJiQHRlc3QuY29tIiwiaWF0IjoxNzY5OTg5OTYyLCJleHAiOjE3NzAwMjU5NjJ9.euX1kzBQf9H1XObX9oV1H_JW-GyXZy7TO1Ca8u9_tac
 @FOLDER_ID = 1
@@ -24,6 +24,12 @@ Content-Type: application/json
   "email": "a@test.com",
   "password": "password"
 }
+###
+###
+POST http://localhost:8081/auth/logout
+Content-Type: application/json
+Authorization: Bearer {{JWT_A}}
+
 
 ###
 ------------------------------------------------------------------
@@ -37,10 +43,8 @@ Personal
 ###
 
 ### Restore folder
-POST http://localhost:8081/folders/restore/{{FOLDER_ID}}
+POST http://localhost:8081/folders/{{FOLDER_ID}}/restore
 Authorization: Bearer {{JWT_A}}
-
-
 ###
 
 ### Delete folder

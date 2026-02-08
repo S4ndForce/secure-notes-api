@@ -1,7 +1,10 @@
 package com.example.security;
 
+import com.example.revoked.RevokedTokenRepository;
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -14,10 +17,12 @@ public class JwtAuthenticationFilter implements Filter {
 
     private final JwtUtil jwtUtil;
     private final JwtAuthenticationEntryPoint entryPoint;
+    private final RevokedTokenRepository revokedTokenRepository;
 
-    public JwtAuthenticationFilter(JwtUtil jwtUtil, JwtAuthenticationEntryPoint entryPoint) {
+    public JwtAuthenticationFilter(JwtUtil jwtUtil, JwtAuthenticationEntryPoint entryPoint, RevokedTokenRepository revokedTokenRepository) {
         this.jwtUtil = jwtUtil;
         this.entryPoint = entryPoint;
+        this.revokedTokenRepository = revokedTokenRepository;
     }
 
     @Override
@@ -32,10 +37,19 @@ public class JwtAuthenticationFilter implements Filter {
             String token = header.substring(7);
 
            try {
-               String email = jwtUtil.validateAndGetEmail(token);
-               var auth = new UsernamePasswordAuthenticationToken(
-                       email, null, Collections.emptyList()
+               Claims claims = jwtUtil.parseClaims(token);
 
+               String email = claims.getSubject();
+               String jti = claims.getId();
+
+               if (revokedTokenRepository.existsByJti(jti)) {
+                   throw new BadCredentialsException("Token revoked");
+               }
+
+               var auth = new UsernamePasswordAuthenticationToken(
+                       email,          // principal
+                       jti,            // credentials (token identity)
+                       Collections.emptyList()
                );
                // Where Authentication object is created
                SecurityContextHolder.getContext().setAuthentication(auth);

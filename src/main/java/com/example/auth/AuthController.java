@@ -1,10 +1,8 @@
 package com.example.auth;
 
 import com.example.security.JwtUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -12,16 +10,14 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthService authService;
-    private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
 
     public AuthController(
             AuthService authService,
-            AuthenticationManager authenticationManager,
             JwtUtil jwtUtil
     ) {
         this.authService = authService;
-        this.authenticationManager = authenticationManager;
+
         this.jwtUtil = jwtUtil;
     }
 
@@ -33,11 +29,13 @@ public class AuthController {
 
     @PostMapping("/login")
     public String login(@RequestBody LoginRequest request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.email, request.password
-                )
-        );
-        return jwtUtil.generateToken(request.email);
+       return authService.login(request);
+    }
+
+    @PostMapping("/logout")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void logout(Authentication auth) {
+        String jti = (String) auth.getCredentials();
+        authService.logout(jti);
     }
 }
