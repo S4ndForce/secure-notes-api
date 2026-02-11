@@ -145,8 +145,12 @@ public class FolderService {
         );
 
         for (Note note : notes) {
-            note.setDeletedAt(null);
-            note.setUpdatedAt(now);
+            // One second of tolerance
+            if (note.getDeletedAt() != null &&
+                    Math.abs(note.getDeletedAt().toEpochMilli() - folder.getDeletedAt().toEpochMilli()) < 1000) {
+                note.setDeletedAt(null);
+                note.setUpdatedAt(now);
+            }
         }
         noteRepository.saveAll(notes);
         folderRepository.save(folder);
