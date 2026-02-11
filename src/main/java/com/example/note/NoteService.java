@@ -56,7 +56,8 @@ public class NoteService {
         return Specification
                 .allOf(NoteSpecs.withId(id))
                 .and(NoteSpecs.belongsTo(user))
-                .and(NoteSpecs.notDeleted());
+                .and(NoteSpecs.notDeleted())
+                .and(NoteSpecs.folderNotDeleted());
     }
 
     private Specification<Note> ownedDeleted(Long id, User user) {
@@ -68,15 +69,18 @@ public class NoteService {
     }
     private Specification<Note> ownedActiveInFolder(Long folderId, User user) {
         return Specification
-                .allOf(NoteSpecs.inFolder(folderId))
+                .allOf(NoteSpecs.inFolder(folderId)) //implicit checking for folders
                 .and(NoteSpecs.belongsTo(user))
-                .and(NoteSpecs.notDeleted());
+                .and(NoteSpecs.notDeleted())
+                .and(NoteSpecs.folderNotDeleted());
     }
 
     private Specification<Note> allActive(User user) {
         return Specification
                 .allOf(NoteSpecs.belongsTo(user))
-                .and(NoteSpecs.notDeleted());
+                .and(NoteSpecs.notDeleted())
+                .and(NoteSpecs.folderNotDeleted());
+
     }
     /* ---------------------------------------------------------------------------------------------------*/
 
@@ -171,6 +175,19 @@ public class NoteService {
         noteRepository.save(note);
     }
 
+    public void restore(Long id, Authentication auth) {
+        User user = currentUser.get(auth);
+
+        Specification<Note> spec = ownedDeleted(id, user);
+
+        Note note = noteRepository.findOne(spec)
+                .orElseThrow(() -> new NotFoundException("Note not found"));
+        ownedAuth.authorize(OwnerAction.UPDATE);
+        note.setDeletedAt(null);
+        note.setUpdatedAt(Instant.now());
+        noteRepository.save(note);
+    }
+
 
 
     public String createSharedLink(Long id, Authentication auth) {
@@ -243,7 +260,10 @@ public class NoteService {
         ownedAuth.authorize(OwnerAction.UPDATE);
         // Normalization
         Set<Tag> tagSet = names.stream()
-                .map(n -> tagRepository.findByName(n).orElseGet(() -> tagRepository.save(new Tag(n))))
+                .map(name -> name.trim().toLowerCase())
+                .filter(name -> !name.isEmpty())
+                .map(name -> tagRepository.findByName(name)
+                        .orElseGet(() -> tagRepository.save(new Tag(name))))
                 .collect(Collectors.toSet());
 
         note.getTags().addAll(tagSet);
@@ -261,6 +281,7 @@ public class NoteService {
         Note note = noteRepository.findOne(spec)
                 .orElseThrow(() -> new NotFoundException("Note not found"));
         ownedAuth.authorize(OwnerAction.UPDATE);
+
         tagRepository.findByName(name).ifPresent(t -> note.getTags().remove(t));
         note.setUpdatedAt(Instant.now());
         noteRepository.save(note);
@@ -268,18 +289,7 @@ public class NoteService {
         return NoteResponse.fromEntity(note);
     }
 
-    public void restore(Long id, Authentication auth) {
-        User user = currentUser.get(auth);
 
-        Specification<Note> spec = ownedDeleted(id, user);
-
-        Note note = noteRepository.findOne(spec)
-                .orElseThrow(() -> new NotFoundException("Note not found"));
-        ownedAuth.authorize(OwnerAction.UPDATE);
-        note.setDeletedAt(null);
-        note.setUpdatedAt(Instant.now());
-        noteRepository.save(note);
-    }
 
 
 
