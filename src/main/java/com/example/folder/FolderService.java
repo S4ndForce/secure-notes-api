@@ -136,7 +136,7 @@ public class FolderService {
 
         Instant now = Instant.now();
 
-        folder.setDeletedAt(null);
+
         folder.setUpdatedAt(now);
 
         List<Note> notes = noteRepository.findAll(
@@ -152,6 +152,7 @@ public class FolderService {
                 note.setUpdatedAt(now);
             }
         }
+        folder.setDeletedAt(null);
         noteRepository.saveAll(notes);
         folderRepository.save(folder);
     }
