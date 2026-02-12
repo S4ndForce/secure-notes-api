@@ -29,7 +29,7 @@ public class SharedLinkCleanupJob {
         this.repo = repo;
         this.executor = executor;
     }
-
+    @Transactional
     @Scheduled(fixedDelay = 60_000)
     public void cleanupExpiredWrapper() {
         try {
