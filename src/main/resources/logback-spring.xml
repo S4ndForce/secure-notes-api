@@ -1,39 +1,26 @@
 <configuration>
 
-    <appender name="JSON_REQUEST" class="ch.qos.logback.core.ConsoleAppender">
+    <!-- Single unified JSON appender -->
+    <appender name="JSON_APP" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <pattern>
-                {"ts":"%d{ISO8601}","level":"%p","logger":"%c{1}","msg":"%replace(%m){'\n',''}","traceId":"%X{traceId}","user":"%X{user}"}%n
+                {"ts":"%d{ISO8601}",
+                "level":"%p",
+                "logger":"%c{1}",
+                "msg":"%replace(%m){'\n',''}",
+                "traceId":"%X{traceId}",
+                "user":"%X{user}"}%n
             </pattern>
         </encoder>
     </appender>
 
-    <appender name="JSON_JOBS" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <pattern>{"ts":"%d{ISO8601}","level":"%p","logger":"JOBS","msg":"%replace(%m){'\n',' '}","traceId":"%X{traceId}"}%n</pattern>
-        </encoder>
-    </appender>
-
-    <!-- Normal colored pattern for all other logs -->
-    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>%d{HH:mm:ss.SSS} %-5level %logger{36} - %msg%n</pattern>
-        </encoder>
-    </appender>
-
-    <logger name="REQUEST" level="INFO" additivity="false">
-        <appender-ref ref="JSON_REQUEST"/>
-    </logger>
-    <logger name="JOBS" level="INFO" additivity="false">
-        <appender-ref ref="JSON_JOBS"/>
-    </logger>
-
     <!-- Noise reducers -->
     <logger name="org.springframework" level="WARN"/>
     <logger name="org.hibernate" level="WARN"/>
-    <!-- Everything else uses normal console -->
+
+    <!-- Root logger: everything goes through JSON -->
     <root level="INFO">
-        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="JSON_APP"/>
     </root>
 
 </configuration>
