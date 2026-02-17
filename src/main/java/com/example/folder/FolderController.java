@@ -1,5 +1,7 @@
 package com.example.folder;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,8 +18,9 @@ public class FolderController {
     }
 
     @PostMapping
-    public FolderResponse create(@RequestBody String name, Authentication auth) {
-        return folderService.create(name, auth);
+    public ResponseEntity<FolderResponse> create(@RequestBody String name, Authentication auth) {
+        FolderResponse folder = folderService.create(name, auth);
+        return ResponseEntity.status(HttpStatus.CREATED).body(folder);
     }
     /*
     @GetMapping

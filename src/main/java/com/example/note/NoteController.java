@@ -25,12 +25,13 @@ public class NoteController {
     }
 
     @PostMapping
-    public NoteResponse create(
+    public ResponseEntity<NoteResponse> create(
             @RequestParam Long folderId,
             @RequestBody String content,
             Authentication auth
     ) {
-        return noteService.create(folderId, content, auth);
+        NoteResponse note = noteService.create(folderId, content, auth);
+        return ResponseEntity.status(HttpStatus.CREATED).body(note);
     }
 
     @GetMapping("/{id}")
