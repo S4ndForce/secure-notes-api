@@ -1,5 +1,6 @@
 package com.example.folder;
 
+import com.example.base.BaseEntity;
 import com.example.user.User;
 import jakarta.persistence.*;
 
@@ -7,7 +8,7 @@ import java.time.Instant;
 
 @Entity
 @Table(name = "folders") // Prevents naming conflicts in db
-public class Folder {
+public class Folder extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,11 +16,6 @@ public class Folder {
 
     private String name;
 
-    @Column(nullable = false, updatable = false)
-    private Instant createdAt;
-
-    @Column(nullable = false)
-    private Instant updatedAt;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private User owner;
@@ -32,7 +28,6 @@ public class Folder {
         this.name = name;
         this.owner = owner;
     }
-
     public Long getId() { return id; }
     public String getName() { return name; }
     public User getOwner() { return owner; }
@@ -65,6 +60,15 @@ public class Folder {
 
     public void setDeletedAt(Instant deletedAt) {
         this.deletedAt = deletedAt;
+    }
+
+    protected void onCreate() {
+        Instant now = Instant.now();
+        this.createdAt = now;
+        this.updatedAt = now;
+    }
+    protected void onUpdate() {
+        this.updatedAt = Instant.now();
     }
 }
 

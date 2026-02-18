@@ -1,5 +1,6 @@
 package com.example.note;
 
+import com.example.base.BaseEntity;
 import com.example.folder.Folder;
 import com.example.tag.Tag;
 import com.example.user.User;
@@ -10,7 +11,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-public class Note {
+public class Note extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,11 +19,6 @@ public class Note {
 
     private Instant deletedAt;
 
-    @Column(nullable = false, updatable = false)
-    private Instant createdAt;
-
-    @Column(nullable = false)
-    private Instant updatedAt;
 
     private String content;
 
@@ -115,5 +111,15 @@ public class Note {
 
     public Instant getUpdatedAt() {
         return updatedAt;
+    }
+
+    public void onCreate() {
+        Instant now = Instant.now();
+        this.createdAt = now;
+        this.updatedAt = now;
+    }
+
+    public void onUpdate() {
+        this.updatedAt = Instant.now();
     }
 }
