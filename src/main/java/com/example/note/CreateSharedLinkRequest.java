@@ -8,7 +8,7 @@ public record CreateSharedLinkRequest(
 
         @NotNull(message = "Expiration duration is required")
         @Positive(message = "Expiration must be greater than 0")
-        @Max(value = 168, message = "Expiration cannot exceed 7 days")
+        @Max(value = 604800, message = "Expiration cannot exceed 7 days")
         Long expiresInSeconds
 
 ) {}

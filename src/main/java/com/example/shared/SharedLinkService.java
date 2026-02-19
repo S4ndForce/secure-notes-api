@@ -108,5 +108,5 @@ public class SharedLinkService {
         return NoteResponse.fromEntity(note);
     }
 
-    //TODO: option to view all shared links owned by user
+
 }
