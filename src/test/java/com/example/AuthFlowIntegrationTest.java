@@ -104,7 +104,7 @@ public class AuthFlowIntegrationTest {
     @Test
     void passwordIsHashed() throws Exception {
 
-        String rawPassword = "secure";
+        String rawPassword = "securePassword";
 
         mockMvc.perform(post("/auth/register")
                         .contentType("application/json")

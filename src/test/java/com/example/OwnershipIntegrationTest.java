@@ -83,7 +83,7 @@ class OwnershipIntegrationTest {
         // soft delete first
         mockMvc.perform(delete("/notes/{id}", note.getId())
                         .with(user("a@test.com").password("password").roles("USER")))
-                .andExpect(status().isNoContent());
+                .andExpect(status().isOk());
 
         // try to retrieve delete note
         mockMvc.perform(get("/notes/{id}", note.getId())
